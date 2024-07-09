@@ -19,6 +19,7 @@ RUN apt-get update \
     libmagickwand-dev \
     libpng-dev \
     libxml2-dev \
+    libxslt-dev\
     libzip-dev \
     libcurl4-openssl-dev \
     # ILIAS dependencies:
@@ -58,43 +59,28 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     gd \
     intl \
     mysqli \
+    pdo_mysql \
     soap \
+    xsl \
     xml \
     xmlrpc \
     zip 
 
-# RUN echo "<VirtualHost *:80>\
-#     ServerAdmin webmaster@example.com\
-# \
-#     DocumentRoot /var/www/html/\
-#     <Directory /var/www/html/>\
-#         Options FollowSymLinks -Indexes\
-#         AllowOverride All\
-#         Require all granted\
-#     </Directory>\
-# \
-#     # Possible values include: debug, info, notice, warn, error, crit, alert, emerg.\
-#     LogLevel warn\
-# \
-#     ErrorLog /var/log/apache2/error.log\
-#     CustomLog /var/log/apache2/access.log combined\
-# </VirtualHost>\
-# " > /etc/apache2/sites-enabled/000-default.conf \
-# && sed -i "s/memory_limit = .*/memory_limit = ${PHP_MEMORY_LIMIT}/" /etc/php/7.4/apache2/php.ini
-# #....
-
 WORKDIR /var/www/html/
 
-# Install ILIAS: (https://docu.ilias.de/ilias.php?baseClass=illmpresentationgui&cmd=layout&ref_id=367&obj_id=0#get-code)
+# Install ILIAS: (https://docu.ilias.de/ilias.php?baseClass=illmpresentationgui&cmd=layout&ref_id=367&obj_id=124784#get-code)
 RUN git clone https://github.com/ILIAS-eLearning/ILIAS.git . \
   && git config --global --add safe.directory /var/www/html \
   && git checkout release_7
 RUN composer install --no-dev \
-    && npm clean-install --omit=dev --ignore-scripts \
-    # &&  npm audit fix \
-    && mkdir /var/www/files/ \
-    && chown www-data:www-data `/var/www/html \
-    && chown www-data:www-data `/var/www/files
+  && npm clean-install --omit=dev --ignore-scripts \
+  # &&  npm audit fix \
+  && mkdir /var/www/files/ \
+  && chown www-data:www-data `/var/www/html \
+  && chown www-data:www-data `/var/www/files
+COPY data/php.ini /usr/local/etc/php/
+COPY data/config.json /var/www/
+# RUN php setup/setup.php install /var/www/config.json --yes
 
 # Start apache2 (https://github.com/docker-library/php/blob/master/8.3/bullseye/apache/apache2-foreground)
 CMD apache2-foreground

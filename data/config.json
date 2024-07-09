@@ -1,0 +1,36 @@
+{
+    "common" : {
+        "client_id" : "myilias"
+    },
+    "database" : {
+        "host" : "db",
+        "user" : "ilias",
+        "password" : "dbpassword",
+        "create_database" : true
+    },
+    "filesystem" : {
+        "data_dir" : "/var/www/files"
+    },
+    "http" : {
+        "path" : "localhost"
+    },
+    "language" : {
+        "default_language" : "de",
+        "install_languages" : ["de"]
+    },
+    "logging" : {
+        "enable" : true,
+        "path_to_logfile" : "/var/www/logs/ilias.log",
+        "errorlog_dir" : "/var/www/logs/"
+    },
+    "systemfolder" : {
+        "contact" : {
+            "firstname" : "test",
+            "lastname" : "t",
+            "email" : ""
+        }
+    },
+    "utilities" : {
+        "path_to_convert" : "/usr/bin/convert"
+    }
+}

@@ -7,48 +7,19 @@ services:
         depends_on:
             - db
         environment:
-            # - ILIAS_DATABASE_PASSWORD_FILE=/run/secrets/database_ilias_password
-            # - ILIAS_HTTP_PATH=http[s]://%host%
-            # - ILIAS_ROOT_USER_PASSWORD_FILE=/run/secrets/ilias_root_password
-            # - ILIAS_SYSTEMFOLDER_CONTACT_FIRSTNAME=...
-            # - ILIAS_SYSTEMFOLDER_CONTACT_LASTNAME=...
-            # - ILIAS_SYSTEMFOLDER_CONTACT_EMAIL=...
-            - MARIADB_USER=ilias
-            - MARIADB_PASSWORD='dbpassword'
-        # secrets:
-        #     - database_ilias_password
-        #     - ilias_root_password
+            - MARIADB_USER="${MARIADB_USER}"
+            - MARIADB_PASSWORD="${MARIADB_PASSWORD}"
         volumes:
-            - ./data/ilias:/var/iliasdata
-            - ./data/log/ilias:/var/log/ilias
+        #     - ./volumes/ilias:/var/iliasdata
+            - ./volumes/log/ilias:/var/log/ilias
     db:
+        image: mariadb:10
         command: --character-set-server=utf8 --collation-server=utf8_general_ci
         environment:
             - MARIADB_ALLOW_EMPTY_PASSWORD=yes
             - MARIADB_DATABASE=ilias
-            # - MARIADB_PASSWORD_FILE=/run/secrets/database_ilias_password
-            # - MARIADB_ROOT_PASSWORD_FILE=/run/secrets/database_root_password
-            - MARIADB_USER=ilias
-            - MARIADB_PASSWORD='dbpassword'
-            - MARIADB_ROOT_PASSWORD='rootpassword'
-        image: mariadb:latest
-        # secrets:
-        #     - database_ilias_password
-        #     - database_root_password
-        volumes:
-            - ./data/mysql:/var/lib/mysql
-    # nginx:
-    #     depends_on:
-    #         - ilias
-    #     image: %image%/nginx:latest
-    #     ports:
-    #         - [%host_ip%:]80:80
-    #     volumes:
-    #         - ./data/ilias/web:/var/iliasdata/web:ro
-# secrets:
-#     database_ilias_password:
-#         file: ./data/secrets/database_ilias_password
-#     database_root_password:
-#         file: ./data/secrets/database_root_password
-#     ilias_root_password:
-#         file: ./data/secrets/ilias_root_password
+            - MARIADB_USER="${MARIADB_USER}"
+            - MARIADB_PASSWORD="${MARIADB_PASSWORD}"
+            - MARIADB_ROOT_PASSWORD="${MARIADB_ROOT_PASSWORD}"
+        # volumes:
+        #     - ./volumes/mysql:/var/lib/mysql

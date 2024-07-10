@@ -7,10 +7,15 @@ services:
         depends_on:
             - db
         environment:
-            - MARIADB_USER="${MARIADB_USER}"
-            - MARIADB_PASSWORD="${MARIADB_PASSWORD}"
+            - DB_ADDR=db
+            - DB_PORT=3306
+            - DB_USER=${DB_USER}
+            - DB_PASSWORD=${DB_PASSWORD}
+            - ILIAS_ROOT_USER=${ILIAS_ROOT_USER}
+            - ILIAS_ROOT_USER_PASSWORD=${ILIAS_ROOT_USER_PASSWORD}
         volumes:
         #     - ./volumes/ilias:/var/iliasdata
+            - ./volumes/files:/var/www/files
             - ./volumes/log/ilias:/var/log/ilias
     db:
         image: mariadb:10
@@ -18,8 +23,8 @@ services:
         environment:
             - MARIADB_ALLOW_EMPTY_PASSWORD=yes
             - MARIADB_DATABASE=ilias
-            - MARIADB_USER="${MARIADB_USER}"
-            - MARIADB_PASSWORD="${MARIADB_PASSWORD}"
-            - MARIADB_ROOT_PASSWORD="${MARIADB_ROOT_PASSWORD}"
+            - MARIADB_USER=${DB_USER}
+            - MARIADB_PASSWORD=${DB_PASSWORD}
+            - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
         # volumes:
         #     - ./volumes/mysql:/var/lib/mysql

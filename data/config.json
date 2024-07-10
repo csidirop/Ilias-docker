@@ -1,8 +1,10 @@
 {
     "common" : {
-        "client_id" : "myilias"
+        "client_id" : "testilias",
+        "server_timezone" : "Europe/Berlin"
     },
     "database" : {
+        "type" : "innodb",
         "host" : "db",
         "user" : "ilias",
         "password" : "dbpassword",
@@ -20,8 +22,8 @@
     },
     "logging" : {
         "enable" : true,
-        "path_to_logfile" : "/var/www/logs/ilias.log",
-        "errorlog_dir" : "/var/www/logs/"
+        "path_to_logfile" : "/var/log/ilias/ilias.log",
+        "errorlog_dir" : "/var/log/ilias"
     },
     "systemfolder" : {
         "contact" : {

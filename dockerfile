@@ -76,11 +76,17 @@ RUN composer install --no-dev \
   && npm clean-install --omit=dev --ignore-scripts \
   # &&  npm audit fix \
   && mkdir /var/www/files/ \
-  && chown www-data:www-data `/var/www/html \
-  && chown www-data:www-data `/var/www/files
+  && mkdir /var/log/ilias \
+  && chown -R www-data:www-data /var/www/html \
+  && chown -R www-data:www-data /var/www/files \
+  && chown -R www-data:www-data /var/log/ilias
+
+USER www-data
+
 COPY data/php.ini /usr/local/etc/php/
 COPY data/config.json /var/www/
 # RUN php setup/setup.php install /var/www/config.json --yes
+COPY docker-entrypoint.sh /
 
 # Start apache2 (https://github.com/docker-library/php/blob/master/8.3/bullseye/apache/apache2-foreground)
-CMD apache2-foreground
+CMD /docker-entrypoint.sh & apache2-foreground

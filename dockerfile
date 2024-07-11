@@ -1,5 +1,5 @@
-# Baseimage PHP 7.4 with Apache2 on Debian 11 bullseye:
-FROM php:7.4-apache
+# Baseimage PHP 8.0 with Apache2 on Debian 11 bullseye:
+FROM php:8.0-apache
 LABEL authors='Christos Sidiropoulos <Christos.Sidiropoulos@uni-mannheim.de>'
 
 ENV LANGUAGE en_US:en
@@ -63,24 +63,25 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     soap \
     xsl \
     xml \
-    xmlrpc \
+    # xmlrpc \
     zip 
 
 WORKDIR /var/www/html/
 
 # Install ILIAS: (https://docu.ilias.de/ilias.php?baseClass=illmpresentationgui&cmd=layout&ref_id=367&obj_id=124784#get-code)
-RUN git clone -b v7.30 --depth 1 --single-branch https://github.com/ILIAS-eLearning/ILIAS.git . \
+RUN git clone -b release_8 --depth 1 --single-branch https://github.com/ILIAS-eLearning/ILIAS.git . \
   && git config --global --add safe.directory /var/www/html
-RUN composer install --no-dev \
-  && npm clean-install --omit=dev --ignore-scripts \
-  # &&  npm audit fix \
-  && mkdir /var/www/files/ \
+RUN mkdir /var/www/files/ \
   && mkdir /var/log/ilias \
-  && chown -R www-data:www-data /var/www/html \
-  && chown -R www-data:www-data /var/www/files \
+  && chown -R www-data:www-data /var/www/ \
   && chown -R www-data:www-data /var/log/ilias
-
 USER www-data
+RUN composer install --no-dev \
+  && npm cache clean --force \
+  && rm -rf node_modules package-lock.json \
+  && npm install --package-lock-only \
+  && npm clean-install --omit=dev --ignore-scripts
+  # &&  npm audit fix \
 
 COPY data/php.ini /usr/local/etc/php/
 COPY data/config.json /var/www/

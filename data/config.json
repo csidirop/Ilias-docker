@@ -18,7 +18,17 @@
     },
     "language" : {
         "default_language" : "de",
-        "install_languages" : ["de"]
+        "install_languages" : [
+            "de",
+            "en"
+        ],
+        "install_local_languages" : [
+            "de"
+        ]
+    },
+    "globalcache" : {
+        "service" : "none",
+        "components" : "all"
     },
     "logging" : {
         "enable" : true,
@@ -27,12 +37,24 @@
     },
     "systemfolder" : {
         "contact" : {
-            "firstname" : "test",
-            "lastname" : "t",
+            "firstname" : "NONAME",
+            "lastname" : "NONAME",
             "email" : ""
         }
     },
+    "style" : {
+        "manage_system_styles" : false,
+        "path_to_lessc" : "/usr/local/bin/lessc"
+    },
+    "mediaobject" : {
+        "path_to_ffmpeg" : "/usr/bin/ffmpeg"
+    },
+    "preview" : {
+        "path_to_ghostscript" : "/usr/bin/ghostscript"
+    },
     "utilities" : {
-        "path_to_convert" : "/usr/bin/convert"
+        "path_to_convert" : "/usr/bin/convert",
+        "path_to_zip" : "/usr/bin/zip",
+        "path_to_unzip" : "/usr/bin/unzip"
     }
 }

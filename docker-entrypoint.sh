@@ -1,12 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
 echo 'Running startup script:'
 
 # Wait for db to be ready: (https://docs.docker.com/compose/startup-order/)
 wait-for-it -t 0 ${DB_ADDR}:${DB_PORT}
 
-# Additional configuration:
-# echo 'Additional configuration:'
+# Install ILIAS:
 cd /var/www/html
 php setup/setup.php install /var/www/config.json --yes
 
@@ -20,5 +19,7 @@ git clone -b release_7 --single-branch https://github.com/Minervis-GmbH/BigBlueB
 git clone -b release7 --single-branch https://github.com/internetlehrer/MultiVc MultiVc
 
 # Finished:
-echo 'Ready for setup: http://localhost/'
-echo 'root:homer'
+echo -e '\n\nILIAS Status:'
+php /var/www/html/setup/setup.php status
+echo -e '\n\nReady for setup:  http://localhost/'
+echo -e '\nCredentials:  root:homer'

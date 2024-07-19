@@ -63,8 +63,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     soap \
     xsl \
     xml \
-    # xmlrpc \
-    zip 
+    zip \
+  && pecl install xmlrpc-1.0.0RC3 \
+  docker-php-ext-enable xmlrpc
 
 WORKDIR /var/www/html/
 

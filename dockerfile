@@ -69,9 +69,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 WORKDIR /var/www/html/
 
 # Install ILIAS: (https://docu.ilias.de/ilias.php?baseClass=illmpresentationgui&cmd=layout&ref_id=367&obj_id=124784#get-code)
-RUN git clone https://github.com/ILIAS-eLearning/ILIAS.git . \
-  && git config --global --add safe.directory /var/www/html \
-  && git checkout release_7
+RUN git clone -b release_7 --single-branch https://github.com/ILIAS-eLearning/ILIAS.git . \
+  && git config --global --add safe.directory /var/www/html
 RUN composer install --no-dev \
   && npm clean-install --omit=dev --ignore-scripts \
   # &&  npm audit fix \

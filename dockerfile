@@ -1,5 +1,5 @@
-# Baseimage PHP 8.0 with Apache2 on Debian 11 bullseye:
-FROM php:8.0-apache
+# Baseimage PHP 8.2 with Apache2 on Debian 11 bullseye:
+FROM php:8.2-apache
 LABEL authors='Christos Sidiropoulos <Christos.Sidiropoulos@uni-mannheim.de>'
 
 ENV LANGUAGE en_US:en
@@ -67,16 +67,19 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     xsl \
     xml \
     zip \
-  && pecl install xmlrpc-1.0.0RC3 \
-  docker-php-ext-enable xmlrpc
+  && pecl install \
+    imagick \
+    xmlrpc-1.0.0RC3 \
+  && docker-php-ext-enable \
+    imagick \
+    xmlrpc
 
 WORKDIR /var/www/html/
 
 # Install ILIAS: (https://docu.ilias.de/ilias.php?baseClass=illmpresentationgui&cmd=layout&ref_id=367&obj_id=124784#get-code)
-RUN git clone -b release_8 --depth 1 --single-branch https://github.com/ILIAS-eLearning/ILIAS.git . \
-  && git config --global --add safe.directory /var/www/html
-RUN mkdir /var/www/files/ \
-  && mkdir /var/www/files/lucene \
+RUN git clone -b release_9 --depth 1 --single-branch https://github.com/ILIAS-eLearning/ILIAS.git . \
+  && git config --global --add safe.directory /var/www/html \
+  && mkdir -p /var/www/files/lucene \
   && mkdir /var/www/java-svr \
   && mkdir /var/log/ilias \
   && chown -R www-data:www-data /var/www/ \
@@ -88,13 +91,14 @@ RUN composer install --no-dev \
   && npm install --package-lock-only \
   && npm clean-install --omit=dev --ignore-scripts \
   # Install Lucene RPC-Server https://github.com/ILIAS-eLearning/ILIAS/blob/release_8/Services/WebServices/RPC/lib/README.md
-  && ln -s /var/www/html/Services/WebServices/RPC/lib/ilServer.jar /var/www/java-svr/
+  && cd /var/www/html/Services/WebServices/RPC/lib \
+  && mvn clean install \
+  && mv target/* /var/www/java-svr
 
 WORKDIR /var/www/html/
 COPY data/ilServer.ini /var/www/java-svr
 COPY data/php.ini /usr/local/etc/php/
 COPY data/config.json /var/www/
-# RUN php setup/setup.php install /var/www/config.json --yes
 COPY docker-entrypoint.sh /
 
 # Start apache2 (https://github.com/docker-library/php/blob/master/8.3/bullseye/apache/apache2-foreground)

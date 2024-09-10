@@ -26,10 +26,13 @@ RUN apt-get update \
     ghostscript \
     graphicsmagick \
     graphicsmagick-imagemagick-compat \
-    # openjdk-7-jdk \
     mimetex \
     ffmpeg \
     npm \
+    # Java Server:
+    default-jdk \
+    default-jre \
+    maven \
     # for newest composer version:
     git \
     unzip \
@@ -73,17 +76,22 @@ WORKDIR /var/www/html/
 RUN git clone -b release_8 --depth 1 --single-branch https://github.com/ILIAS-eLearning/ILIAS.git . \
   && git config --global --add safe.directory /var/www/html
 RUN mkdir /var/www/files/ \
+  && mkdir /var/www/files/lucene \
+  && mkdir /var/www/java-svr \
   && mkdir /var/log/ilias \
   && chown -R www-data:www-data /var/www/ \
-  && chown -R www-data:www-data /var/log/ilias
+  && chown -R www-data:www-data /var/log
 USER www-data
 RUN composer install --no-dev \
   && npm cache clean --force \
   && rm -rf node_modules package-lock.json \
   && npm install --package-lock-only \
-  && npm clean-install --omit=dev --ignore-scripts
-  # &&  npm audit fix \
+  && npm clean-install --omit=dev --ignore-scripts \
+  # Install Lucene RPC-Server https://github.com/ILIAS-eLearning/ILIAS/blob/release_8/Services/WebServices/RPC/lib/README.md
+  && ln -s /var/www/html/Services/WebServices/RPC/lib/ilServer.jar /var/www/java-svr/
 
+WORKDIR /var/www/html/
+COPY data/ilServer.ini /var/www/java-svr
 COPY data/php.ini /usr/local/etc/php/
 COPY data/config.json /var/www/
 # RUN php setup/setup.php install /var/www/config.json --yes

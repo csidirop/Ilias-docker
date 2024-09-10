@@ -22,8 +22,13 @@ git clone -b release_8 --single-branch https://github.com/srsolutionsag/H5P.git 
 cd ~/html
 composer install --no-dev
 
+# Start Java server:
+java -jar /var/www/java-svr/ilServer.jar /var/www/java-svr/ilServer.ini start > /var/log/ilias/java_srv.log 2>&1 &
+java -jar /var/www/java-svr/ilServer.jar /var/www/java-svr/ilServer.ini createIndex testilias_0
+
 # Finished:
 echo -e '\n\nILIAS Status:'
 php /var/www/html/setup/setup.php status
+java -jar /var/www/java-svr/ilServer.jar /var/www/java-svr/ilServer.ini status
 echo -e '\n\nReady for setup:  http://localhost/'
 echo -e '\nCredentials:  root:homer'

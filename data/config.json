@@ -56,5 +56,9 @@
         "path_to_convert" : "/usr/bin/convert",
         "path_to_zip" : "/usr/bin/zip",
         "path_to_unzip" : "/usr/bin/unzip"
+    }, 
+    "webservices" : {
+        "rpc_server_host" : "localhost",
+        "rpc_server_port" : "11111"
     }
 }

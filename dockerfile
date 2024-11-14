@@ -1,5 +1,5 @@
 # Baseimage PHP 8.2 with Apache2 on Debian 11 bullseye:
-FROM php:8.2-apache
+FROM php:8.3-apache
 LABEL authors='Christos Sidiropoulos <Christos.Sidiropoulos@uni-mannheim.de>'
 
 ENV LANGUAGE en_US:en
@@ -77,7 +77,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 WORKDIR /var/www/html/
 
 # Install ILIAS: (https://docu.ilias.de/ilias.php?baseClass=illmpresentationgui&cmd=layout&ref_id=367&obj_id=124784#get-code)
-RUN git clone -b release_9 --depth 1 --single-branch https://github.com/ILIAS-eLearning/ILIAS.git . \
+RUN git clone -b release_10 --depth 1 --single-branch https://github.com/ILIAS-eLearning/ILIAS.git . \
   && git config --global --add safe.directory /var/www/html \
   && mkdir -p /var/www/files/lucene \
   && mkdir /var/www/java-svr \
@@ -85,13 +85,13 @@ RUN git clone -b release_9 --depth 1 --single-branch https://github.com/ILIAS-eL
   && chown -R www-data:www-data /var/www/ \
   && chown -R www-data:www-data /var/log
 USER www-data
-RUN composer install --no-dev \
-  && npm cache clean --force \
-  && rm -rf node_modules package-lock.json \
-  && npm install --package-lock-only \
-  && npm clean-install --omit=dev --ignore-scripts \
-  # Install Lucene RPC-Server https://github.com/ILIAS-eLearning/ILIAS/blob/release_8/Services/WebServices/RPC/lib/README.md
-  && cd /var/www/html/Services/WebServices/RPC/lib \
+RUN npm cache clean --force \
+  # && rm -rf node_modules package-lock.json \
+  && npm install \
+  # && npm clean-install --omit=dev --ignore-scripts \
+  && composer install --no-dev \
+  # Install Lucene RPC-Server (https://github.com/ILIAS-eLearning/ILIAS/tree/release_10/components/ILIAS/WebServices/RPC/lib)
+  && cd /var/www/html/components/ILIAS/WebServices/RPC/lib \
   && mvn clean install \
   && mv target/* /var/www/java-svr
 
